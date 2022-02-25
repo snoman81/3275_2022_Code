@@ -51,7 +51,7 @@ public class RobotContainer {
     public final HDrive m_hDrive = new HDrive();
     public final Pneumatics m_pneumatics = new Pneumatics();
     public final ClimberCatcher m_climbercatcher = new ClimberCatcher();
-
+    public final Shooter m_shooter = new Shooter();
 // Joysticks
 private final XboxController operator = new XboxController(1);
 private final Joystick driver = new Joystick(0);
@@ -82,8 +82,8 @@ private final Joystick driver = new Joystick(0);
     SmartDashboard.putData("DriveDistance", new DriveDistance( m_driveTrain ));
     SmartDashboard.putData("intakeRun: my_In", new intakeRun(1, m_intake));
     SmartDashboard.putData("intakeRun: my_Out", new intakeRun(-1, m_intake));
-    SmartDashboard.putData("ele run: up", new elerun(1, m_ele));
-    SmartDashboard.putData("ele run: down", new elerun(-1, m_ele));
+    SmartDashboard.putData("ele run: up", new ele_1_Run(1, m_ele));
+    SmartDashboard.putData("ele run: down", new ele_1_Run(-1, m_ele));
     SmartDashboard.putData("HDrive Run: Left", new HDriveRun(1, m_hDrive));
     SmartDashboard.putData("HDrive Run: Right", new HDriveRun(-1, m_hDrive));
 
@@ -122,70 +122,85 @@ private final Joystick driver = new Joystick(0);
   private void configureButtonBindings() {
         
         // Create some buttons
-
-//Ryan**
-
-        final JoystickButton climberCatcherfwd = new JoystickButton(operator, 1);        
-        climberCatcherfwd.whenHeld(new ClimberCatcherRun(1, m_climbercatcher) ,true);
-        SmartDashboard.putData("climbercatcherfwd",new ClimberCatcherRun(1, m_climbercatcher) );
-
-        
-        final JoystickButton climberCatcherrev = new JoystickButton(operator, 2);        
-        climberCatcherrev.whenHeld(new ClimberCatcherRun(-1, m_climbercatcher) ,true);
-        SmartDashboard.putData("climbercatcherrev",new ClimberCatcherRun(-1, m_climbercatcher) );
+        ConfigureDriver_Joy();
+        ConfigureCoDirver_Joy();
+  }
 
 
 
+  private void ConfigureDriver_Joy(){
 
-//Ryan**
+    final JoystickButton climberDown12 = new JoystickButton(driver, 12);        
+    climberDown12.whenHeld(new ClimbRun(-1, m_climber) ,true);
+    //SmartDashboard.putData("Climber Down12",new ClimbRun(-1, m_climber) );
 
-        final XboxControllerAxisButton eledownbuttonRT = new XboxControllerAxisButton(operator, 3);        
-        eledownbuttonRT.whenHeld(new elerun(-1, m_ele) ,true);
-        SmartDashboard.putData("ele down buttonRT",new elerun(-1, m_ele) );
+    final JoystickButton climberup11 = new JoystickButton(driver, 11);        
+    climberup11.whenHeld(new ClimbRun(1, m_climber) ,true);
+    //SmartDashboard.putData("Climber up11",new ClimbRun(1, m_climber) );
 
-        final JoystickButton eleupbuttonRB = new JoystickButton(operator, XboxController.Button.kRightBumper.value);        
-        eleupbuttonRB.whenHeld(new elerun(1, m_ele) ,true);
-        SmartDashboard.putData("ele up buttonRB",new elerun(1, m_ele) );
+    final JoystickPOVButton hDriveRight_POVE = new JoystickPOVButton(driver, 90);        
+    hDriveRight_POVE.whenHeld(new HDriveRun(1.0, m_hDrive) ,true);
+    //SmartDashboard.putData("HDrive Right_POVE",new HDriveRun(0, m_hDrive) );
 
-        final XboxControllerAxisButton intakeoutbuttonLT = new XboxControllerAxisButton(operator, 2);        
-        intakeoutbuttonLT.whenHeld(new intakeRun(1, m_intake) ,true);
-        SmartDashboard.putData("intake out buttonLT",new intakeRun(1, m_intake) );
+    final JoystickPOVButton hDriveLeft_POVW = new JoystickPOVButton(driver, 270);        
+    hDriveLeft_POVW.whenHeld(new HDriveRun(-1.0, m_hDrive) ,true);
+    //SmartDashboard.putData("HDrive Left_POVW",new HDriveRun(0, m_hDrive) );
+    
+  final JoystickButton LimeLIghtStear_BTN = new JoystickButton(driver, 7);
+  //LimeLIghtStear_BTN.whenHeld(new drivewithLimelightStear(() ->  -driver.getRawAxis(1), myLimeLight , m_driveTrain) )
+  
+  final JoystickButton pextendButton4 = new JoystickButton(driver, 4);        
+  pextendButton4.whenPressed(new Pextend( m_pneumatics ) ,true);
+  //SmartDashboard.putData("P extend Button 4",new Pextend( m_pneumatics ) );
 
-        final JoystickButton intatkerunbuttonLB = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);        
-        intatkerunbuttonLB.whenHeld(new intakeRun(-1, m_intake) ,true);
-        SmartDashboard.putData("intatke run buttonLB",new intakeRun(-1, m_intake) );
+  final JoystickButton pretract3 = new JoystickButton(driver, 3);        
+  pretract3.whenPressed(new Pretract( m_pneumatics ) ,true);
+  //SmartDashboard.putData("P retract 3",new Pretract( m_pneumatics ) );;
 
-        final JoystickButton climberDown12 = new JoystickButton(driver, 12);        
-        climberDown12.whenHeld(new ClimbRun(-1, m_climber) ,true);
-        SmartDashboard.putData("Climber Down12",new ClimbRun(-1, m_climber) );
+  }
 
-        final JoystickButton climberup11 = new JoystickButton(driver, 11);        
-        climberup11.whenHeld(new ClimbRun(1, m_climber) ,true);
-        SmartDashboard.putData("Climber up11",new ClimbRun(1, m_climber) );
+  private void ConfigureCoDirver_Joy(){
 
-        final JoystickPOVButton hDriveRight_POVE = new JoystickPOVButton(driver, 90);        
-        hDriveRight_POVE.whenHeld(new HDriveRun(1.0, m_hDrive) ,true);
-        SmartDashboard.putData("HDrive Right_POVE",new HDriveRun(0, m_hDrive) );
+    final JoystickButton shooter_Low_X = new JoystickButton(operator, XboxController.Button.kX.value);        
+    shooter_Low_X.whileHeld(new Shooter_Run(() -> SmartDashboard.getNumber("Shooter Low Speed",.5), m_shooter) ,true);
+ 
+    final JoystickButton shooter_High_Y = new JoystickButton(operator, XboxController.Button.kY.value);        
+    shooter_High_Y.whileHeld(new Shooter_Run(() -> SmartDashboard.getNumber("Shooter High Speed",.75), m_shooter) ,true);
 
-        final JoystickPOVButton hDriveLeft_POVW = new JoystickPOVButton(driver, 270);        
-        hDriveLeft_POVW.whenHeld(new HDriveRun(-1.0, m_hDrive) ,true);
-        SmartDashboard.putData("HDrive Left_POVW",new HDriveRun(0, m_hDrive) );
-        
-      final JoystickButton LimeLIghtStear_BTN = new JoystickButton(driver, 7);
-      //LimeLIghtStear_BTN.whenHeld(new drivewithLimelightStear(() ->  -driver.getRawAxis(1), myLimeLight , m_driveTrain) )
-      
-      final JoystickButton pextendButton4 = new JoystickButton(driver, 4);        
-      pextendButton4.whenPressed(new Pextend( m_pneumatics ) ,true);
-      SmartDashboard.putData("P extend Button 4",new Pextend( m_pneumatics ) );
+    //Ryan**
 
-      final JoystickButton pretract3 = new JoystickButton(driver, 3);        
-      pretract3.whenPressed(new Pretract( m_pneumatics ) ,true);
-      SmartDashboard.putData("P retract 3",new Pretract( m_pneumatics ) );;
+    //final JoystickButton climberCatcherfwd = new JoystickButton(operator, 1);        
+   // climberCatcherfwd.whenHeld(new ClimberCatcherRun(1, m_climbercatcher) ,true);
+    //SmartDashboard.putData("climbercatcherfwd",new ClimberCatcherRun(1, m_climbercatcher) );
 
-    // _BEGIN AUTOGENERATED CODE, SOURCE=ROBOTBUILDER ID=BUTTONS
+    
+    //final JoystickButton climberCatcherrev = new JoystickButton(operator, 2);        
+    //climberCatcherrev.whenHeld(new ClimberCatcherRun(-1, m_climbercatcher) ,true);
+    //SmartDashboard.putData("climbercatcherrev",new ClimberCatcherRun(-1, m_climbercatcher) );
+    //Ryan**
 
+    final XboxControllerAxisButton intakeoutbuttonLT = new XboxControllerAxisButton(operator, XboxController.Axis.kLeftTrigger.value);        
+    intakeoutbuttonLT.whenHeld(new intakeRun(1, m_intake) ,true);
+    //SmartDashboard.putData("intake out buttonLT",new intakeRun(1, m_intake) );
 
-    // END AUTOGENERATED CODE, SOURCE=ROBOTBUILDER ID=BUTTONS
+    final JoystickButton intatkerunbuttonLB = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);        
+    intatkerunbuttonLB.whenHeld(new intakeRun(-1, m_intake) ,true);
+    //SmartDashboard.putData("intatke run buttonLB",new intakeRun(-1, m_intake) );
+
+    final XboxControllerAxisButton eledownbuttonRT = new XboxControllerAxisButton(operator, XboxController.Axis.kRightTrigger.value);        
+    //eledownbuttonRT.whenHeld(new ele_1_Run(-1, m_ele) ,true);
+    eledownbuttonRT.whenHeld(new Ele_Run_Both(-1,-1, m_ele) ,true);
+    //SmartDashboard.putData("ele down buttonRT",new ele_1_Run(-1, m_ele) );
+
+    final JoystickButton eleupbuttonRB = new JoystickButton(operator, XboxController.Button.kRightBumper.value);        
+    //eleupbuttonRB.whenHeld(new ele_1_Run(1, m_ele) ,true);
+    eleupbuttonRB.whenHeld(new Ele_Run_Both(1,1, m_ele) ,true);
+    //SmartDashboard.putData("ele up buttonRB",new ele_1_Run(1, m_ele) );
+
+    
+
+    
+
   }
 
     // BEGIN AUTOGENERATED CODE, SOURCE=ROBOTBUILDER ID=FUNCTIONS
